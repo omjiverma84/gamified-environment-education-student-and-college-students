@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Smart Digital Dustbin Scanner - EcoLearn Pro</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<div class="dash">
+  <aside class="side">
+    <div class="brand"><span class="leaf">🌱</span> EcoLearn</div>
+    <p>Hi, <b id="studentName">Learner</b></p>
+    <a data-page="dashboard" href="dashboard.html">🏠 Dashboard</a>
+    <a data-page="scan" class="active" href="scan.html">📷 Scan Smart Bin</a>
+    <a data-page="lessons" href="lessons.html">📚 Lessons</a>
+    <a data-page="quiz" href="quiz.html">🧠 Quizzes</a>
+    <a data-page="challenges" href="challenges.html">🌍 Challenges</a>
+    <a data-page="teacher" href="teacher.html">👩‍🏫 Teacher Review</a>
+    <a data-page="leaderboard" href="leaderboard.html">🏆 Leaderboard</a>
+    <a data-page="certificate" href="certificate.html">📜 Certificate</a>
+    <a data-page="profile" href="profile.html">👤 Profile</a>
+    <a href="#" onclick="logout()">🚪 Logout</a>
+  </aside>
+
+  <main class="main">
+    <div class="topline">
+      <div>
+        <h1 style="margin:0 0 4px">🗑️ Smart Digital Dustbin & Scanner</h1>
+        <p class="muted" style="margin:0">Hardware-Software Source Segregation • IoT Sensor Verification • Instant Rewards</p>
+      </div>
+      <span class="pill">💰 <b id="coinCount">0</b> EcoCoins</span>
+    </div>
+
+    <!-- Navigation Tabs matching image flow -->
+    <div class="redemption-tabs">
+      <button class="tab-link active" data-tab="flow" onclick="switchScanTab('flow')">📱 Bin Scanner & Flow</button>
+      <button class="tab-link" data-tab="redeem" onclick="switchScanTab('redeem')">🎁 Redeem Eco-Coins</button>
+      <button class="tab-link" data-tab="authorities" onclick="switchScanTab('authorities')">📊 Authorities IoT Dashboard</button>
+      <button class="tab-link" data-tab="history" onclick="switchScanTab('history')">📜 Deposit History</button>
+    </div>
+
+    <!-- TAB 1: 5-STEP SCANNER FLOW -->
+    <div id="tabContentFlow">
+      <div id="scanSteps" class="scan-flow-steps"></div>
+
+      <div id="activeBinBadge" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px"></div>
+
+      <!-- Smart Dustbin Multi-Compartment Hardware Visualizer -->
+      <div class="card" style="margin-bottom:20px;padding:20px;background:#ffffff">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap">
+          <div>
+            <h3 style="margin:0 0 4px;color:#052e16">🏢 Smart Digital Dustbin Rack (IoT Hardware)</h3>
+            <p class="muted" style="font-size:13px;margin:0">Motorized auto-opening lids with ultrasonic volume & load cell weight sensors.</p>
+          </div>
+          <span class="badge" style="background:#f0fdf4;color:#16a34a">● Active Telemetry Link</span>
+        </div>
+        <div id="compartmentsRack" class="dustbin-rack"></div>
+      </div>
+
+      <!-- STEP 1: SCAN ID ON BIN (QR/NFC) -->
+      <div id="step1View" class="card" style="padding:26px">
+        <div style="text-align:center;max-width:600px;margin:0 auto">
+          <span class="tag" style="background:#dbeafe;color:#1e40af">Step 1: Hardware-Software Integration</span>
+          <h2 style="margin:10px 0 6px">Scan Smart Dustbin ID (QR Code / NFC)</h2>
+          <p class="muted" style="margin-bottom:20px">
+            Point your camera at the QR code on the Smart Bin or use NFC tap to unlock the sorting mechanism.
+          </p>
+
+          <!-- Camera Viewfinder -->
+          <div class="camera-box">
+            <video id="scannerVideo" playsinline autoplay muted></video>
+            <div class="viewfinder">
+              <span style="color:#22c55e;font-size:12px;font-weight:800;background:rgba(0,0,0,0.6);padding:4px 8px;border-radius:6px">
+                ALIGN QR CODE IN FRAME
+              </span>
+            </div>
+            <div class="scan-laser"></div>
+          </div>
+
+          <!-- Scanner Action Buttons -->
+          <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+            <button id="startCamBtn" class="btn primary" onclick="startCameraScanner()">
+              📷 Start Camera QR Scanner
+            </button>
+            <button class="btn" style="background:#f0fdf4;border-color:#86efac;color:#15803d" onclick="simulateNfcTap()">
+              📲 Simulate NFC Tap
+            </button>
+          </div>
+
+          <hr style="border:0;border-top:1px solid var(--line);margin:20px 0">
+
+          <!-- 1-Click Demo Bins -->
+          <p class="muted" style="font-size:13px;font-weight:800;margin-bottom:10px">OR QUICK SCAN DEMO CAMPUS BINS:</p>
+          <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:18px">
+            <button class="btn" onclick="connectBin('ECO-BIN-01')">🍔 Canteen Bin #01</button>
+            <button class="btn" onclick="connectBin('ECO-BIN-02')">📚 Library Bin #02</button>
+            <button class="btn" onclick="connectBin('ECO-BIN-03')">🔬 Science Block Bin #03</button>
+            <button class="btn" onclick="connectBin('ECO-BIN-04')">🚆 Metro Gate Bin #04</button>
+            <button class="btn" onclick="connectBin('ECO-BIN-05')">🌳 City Park Bin #05</button>
+          </div>
+
+          <!-- Manual Code Entry -->
+          <div style="display:flex;max-width:380px;margin:0 auto;gap:8px">
+            <input id="manualBinInput" placeholder="Enter Bin ID (e.g. ECO-BIN-01)" style="text-transform:uppercase">
+            <button class="btn dark" onclick="manualBinConnect()">Connect</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: SELECT WASTE TYPE -->
+      <div id="step2View" class="card" style="display:none;padding:26px">
+        <div style="text-align:center;max-width:680px;margin:0 auto 18px">
+          <span class="tag" style="background:#fef3c7;color:#92400e">Step 2: User-Driven Source Segregation</span>
+          <h2 style="margin:10px 0 6px">Select Waste Type on App / Bin</h2>
+          <p class="muted">
+            Choose what you are disposing. The Smart Dustbin will automatically unlock the correct segregated compartment.
+          </p>
+        </div>
+        <div id="wasteTypeGrid" class="waste-cards"></div>
+        <div style="text-align:center;margin-top:14px">
+          <button class="btn" onclick="resetScanFlow()">← Change Bin</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: COMPARTMENT UNLOCKS -->
+      <div id="step3View" style="display:none">
+        <div id="unlockedMessage"></div>
+      </div>
+
+      <!-- STEP 4: SENSOR VERIFICATION -->
+      <div id="step4View" style="display:none">
+        <div id="sensorOutput"></div>
+      </div>
+
+      <!-- STEP 5: INSTANT COINS CREDITED -->
+      <div id="step5View" style="display:none">
+        <div id="rewardSuccessBox"></div>
+      </div>
+    </div>
+
+    <!-- TAB 2: REDEMPTION HUB -->
+    <div id="tabContentRedeem" style="display:none">
+      <div class="card" style="background:linear-gradient(135deg,#052e16,#16a34a);color:#fff;margin-bottom:24px;padding:26px">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+          <div>
+            <span class="badge" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.3)">
+              Gamified Reward Ecosystem
+            </span>
+            <h2 style="margin:8px 0;color:#fff">Redeem Your Eco-Coins</h2>
+            <p style="margin:0;opacity:0.9;max-width:540px">
+              Turn your waste segregation efforts into real campus meal vouchers, stationery discounts, or civic travel subsidies!
+            </p>
+          </div>
+          <div style="background:rgba(255,255,255,0.15);padding:16px 24px;border-radius:20px;text-align:center">
+            <div style="font-size:13px;opacity:0.85">YOUR BALANCE</div>
+            <div style="font-size:36px;font-weight:900" id="userCoinsDisplay">0</div>
+            <div style="font-size:12px;opacity:0.9">Eco-Coins</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- A) College Redemption -->
+      <div style="margin-bottom:28px">
+        <div class="title">
+          <div>
+            <h2 style="font-size:24px;margin:0 0 4px">🏫 A) College Redemption (Institutional Level)</h2>
+            <p class="muted" style="margin:0">Canteen food discounts, stationery supplies & library fine waivers</p>
+          </div>
+        </div>
+        <div id="collegeRewardsGrid" class="grid"></div>
+      </div>
+
+      <!-- B) Public Place Redemption -->
+      <div style="margin-bottom:28px">
+        <div class="title">
+          <div>
+            <h2 style="font-size:24px;margin:0 0 4px">🏙️ B) Public Place Redemption (Public / Civic Level)</h2>
+            <p class="muted" style="margin:0">Railways, Metro subsidies, Municipal parks, and Civic micro-payments</p>
+          </div>
+        </div>
+        <div id="publicRewardsGrid" class="grid"></div>
+      </div>
+
+      <!-- Active Redeemed Vouchers -->
+      <div class="card" style="margin-top:24px">
+        <h3 style="margin:0 0 8px">🎟️ Your Active Vouchers & Coupons</h3>
+        <p class="muted" style="font-size:13px;margin:0 0 14px">Present these QR/Voucher codes at the campus canteen or municipal counter.</p>
+        <div id="activeVouchersList"></div>
+      </div>
+    </div>
+
+    <!-- TAB 3: AUTHORITIES IoT DASHBOARD -->
+    <div id="tabContentAuthorities" style="display:none">
+      <div class="title">
+        <div>
+          <h2 style="font-size:26px;margin:0 0 4px">📊 Authorities Backend Dashboard</h2>
+          <p class="muted" style="margin:0">Real-Time IoT Telemetry • Ultrasonic Fill Monitoring • Route Optimization</p>
+        </div>
+        <span class="pill" style="background:#ecfdf5;color:#047857">● 5 Connected IoT Dustbins</span>
+      </div>
+
+      <!-- Fleet Stats -->
+      <div class="cards4" style="margin-bottom:20px">
+        <div class="card">
+          <p class="muted" style="margin:0 0 4px">Total Waste Segregated</p>
+          <h2 style="margin:0;color:#052e16">73.0 kg</h2>
+        </div>
+        <div class="card">
+          <p class="muted" style="margin:0 0 4px">Segregation Accuracy</p>
+          <h2 style="margin:0;color:#16a34a">99.1%</h2>
+        </div>
+        <div class="card">
+          <p class="muted" style="margin:0 0 4px">CO2 Emissions Averted</p>
+          <h2 style="margin:0;color:#0284c7">412 kg</h2>
+        </div>
+        <div class="card">
+          <p class="muted" style="margin:0 0 4px">Bins Needing Pickup</p>
+          <h2 style="margin:0;color:#ef4444">2 Bins</h2>
+        </div>
+      </div>
+
+      <!-- Active Dustbins Table -->
+      <div class="card" style="margin-bottom:20px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap">
+          <h3 style="margin:0">Live Dustbin Sensor Feeds</h3>
+          <span class="tag" style="background:#f1f5f9;color:#475569">Updated: Just Now</span>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Dustbin ID</th>
+              <th>Location</th>
+              <th>Fill Level</th>
+              <th>Daily Weight</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody id="authoritiesBinTable"></tbody>
+        </table>
+      </div>
+
+      <!-- AI Route Optimization -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+          <div>
+            <h3 style="margin:0 0 4px">🚚 Smart Waste Collection Route Planner</h3>
+            <p class="muted" style="font-size:13px;margin:0">
+              Dispatches municipal collection vehicles only to full/critical bins (>65%) to save fuel and prevent overflow.
+            </p>
+          </div>
+          <button class="btn primary" onclick="computeOptimizedRoute()">
+            Compute Optimized Route
+          </button>
+        </div>
+        <div id="routeOptimizerResult"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: DEPOSIT HISTORY -->
+    <div id="tabContentHistory" style="display:none">
+      <div class="title">
+        <div>
+          <h2 style="font-size:26px;margin:0 0 4px">📜 Your Smart Dustbin Deposits</h2>
+          <p class="muted" style="margin:0">History of all verified waste segregations and EcoCoins earned.</p>
+        </div>
+      </div>
+      <div class="card">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Smart Bin</th>
+              <th>Waste Category</th>
+              <th>Weight</th>
+              <th>Coins Earned</th>
+            </tr>
+          </thead>
+          <tbody id="scanHistoryTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal Dialog -->
+<div class="modal" onclick="if(event.target.className=='modal')closeModal()">
+  <div class="modal-box">
+    <button class="btn red" style="float:right" onclick="closeModal()">Close</button>
+    <h2 id="modalTitle"></h2>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast"></div>
+
+<script src="assets/js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', scanPage);
+</script>
+</body>
+</html>
